@@ -25,11 +25,26 @@ def menuItemJSON(restaurant_id,menu_id):
 
 
 @app.route('/')
+def restaurantList():
+    return 'List all restaurants.'
+
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id)
     return render_template('menu.html', restaurant=restaurant, items=items)
+
+@app.route('/restaurants/<int:restaurant_id>/edit')
+def editRestaurant(restaurant_id):
+    return 'Edit restaurant'
+
+@app.route('/restaurants/<int:restaurant_id>/delete')
+def deleteRestaurant(restaurant_id):
+    return 'Delete restaurant'
+
+@app.route('/restaurants/<int:restaurant_id>/new')
+def newRestaurant(restaurant_id):
+    return 'New restaurant'
 
 # Task 1: Create route for newMenuItem function here
 
