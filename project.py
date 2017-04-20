@@ -25,10 +25,31 @@ def menuItemJSON(restaurant_id,menu_id):
 
 # Routes
 
+#######################  RESTAURANTS  ###################
+
 # List all restaurants
 @app.route('/')
 def restaurantList():
-    return 'List all restaurants.'
+    items = session.query(Restaurant)
+    return render_template('restaurant.html', items=items)
+
+# Create new restaurant
+@app.route('/restaurants/new')
+def newRestaurant():
+    return 'New restaurant'
+
+# Edit restaurant name
+@app.route('/restaurants/<int:restaurant_id>/edit')
+def editRestaurant(restaurant_id):
+    item = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    return render_template('editrestaurant.html', item=item)
+
+# Delete a restaurant
+@app.route('/restaurants/<int:restaurant_id>/delete')
+def deleteRestaurant(restaurant_id):
+    return 'Delete restaurant'
+
+#######################  MENU ITEMS ###################
 
 # View menu items of a restaurant
 @app.route('/restaurants/<int:restaurant_id>/')
@@ -36,21 +57,6 @@ def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id)
     return render_template('menu.html', restaurant=restaurant, items=items)
-
-# Edit restaurant name
-@app.route('/restaurants/<int:restaurant_id>/edit')
-def editRestaurant(restaurant_id):
-    return 'Edit restaurant'
-
-# Delete a restaurant
-@app.route('/restaurants/<int:restaurant_id>/delete')
-def deleteRestaurant(restaurant_id):
-    return 'Delete restaurant'
-
-# Create new restaurant
-@app.route('/restaurants/<int:restaurant_id>/new')
-def newRestaurant(restaurant_id):
-    return 'New restaurant'
 
 # Create new menu item for a restaurant
 @app.route('/restaurants/<int:restaurant_id>/new', methods=['GET','POST'])
