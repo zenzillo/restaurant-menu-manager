@@ -46,10 +46,18 @@ def newRestaurant():
         return render_template('newrestaurant.html')
 
 # Edit restaurant name
-@app.route('/restaurants/<int:restaurant_id>/edit')
+@app.route('/restaurants/<int:restaurant_id>/edit', methods=['GET','POST'])
 def editRestaurant(restaurant_id):
     item = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    return render_template('editrestaurant.html', item=item)
+    if request.method == 'POST':
+        if request.form['name']:
+            item.name = request.form['name']
+        session.add(item)
+        session.commit()
+        flash("Restaurant edited!")
+        return redirect(url_for('restaurantList'))
+    else:
+        return render_template('editrestaurant.html', item=item)
 
 # Delete a restaurant
 @app.route('/restaurants/<int:restaurant_id>/delete')
@@ -91,8 +99,6 @@ def editMenuItem(restaurant_id, menu_id):
         flash("menu item edited!")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     else:
-        # USE THE RENDER_TEMPLATE FUNCTION BELOW TO SEE THE VARIABLES YOU
-        # SHOULD USE IN YOUR EDITMENUITEM TEMPLATE
         return render_template(
             'editmenuitem.html', restaurant_id=restaurant_id, menu_id=menu_id, item=editedItem)
 
