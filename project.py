@@ -36,7 +36,7 @@ def restaurantList():
 # Create new restaurant
 @app.route('/restaurants/new')
 def newRestaurant():
-    return 'New restaurant'
+    return render_template('newrestaurant.html')
 
 # Edit restaurant name
 @app.route('/restaurants/<int:restaurant_id>/edit')
@@ -47,7 +47,8 @@ def editRestaurant(restaurant_id):
 # Delete a restaurant
 @app.route('/restaurants/<int:restaurant_id>/delete')
 def deleteRestaurant(restaurant_id):
-    return 'Delete restaurant'
+    item = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    return render_template('deleterestaurant.html', item=item)
 
 #######################  MENU ITEMS ###################
 
