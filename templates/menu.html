@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap.css') }}">
+</head>
+<body>
+<div class="container">
+
+<h1>{{restaurant.name}}</h1>
+
+<div class="row">
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		{% for message in messages%}
+		<div class="col-sm-4 alert alert-success">
+  			{{ message }}
+		</div>
+		{% endfor %}
+		</ul>
+	{% endif %}
+{% endwith %}
+</div>
+
+<a href="{{ url_for('newMenuItem', restaurant_id=restaurant.id) }}">Create new item</a>
+<br><br>
+
+{% for i in items %}
+<table class="table">
+	<tr><td>
+		{{i.name}}<br>
+		{{i.description}}<br>
+		{{i.price}}<br>
+		<a href="{{ url_for('editMenuItem', restaurant_id=i.restaurant_id, menu_id=i.id) }}">Edit</a><br>
+		<a href="{{ url_for('deleteMenuItem', restaurant_id=i.restaurant_id, menu_id=i.id) }}">Delete</a>
+	</td></tr>
+</table>
+{% endfor %}
+
+</div>
+</body>
+
+</html>
