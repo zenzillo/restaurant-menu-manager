@@ -12,12 +12,26 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 #Making an API Endpoint (GET Request)
+# Restaurant list
+@app.route('/restaurants/JSON')
+def restaurantsJSON():
+    restaurants = session.query(Restaurant)
+    return jsonify(Restaurants=[i.serialize for i in restaurants])
+
+# Single restaurant
+@app.route('/restaurants/<int:restaurant_id>/JSON')
+def restaurantJSON(restaurant_id):
+    restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    return jsonify(Restaurants=restaurant.serialize)
+
+# Menu for a single restaurant
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
 def restaurantMenuJSON(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id=restaurant.id)
     return jsonify(MenuItems=[i.serialize for i in items])
 
+# Single menu item
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/JSON')
 def menuItemJSON(restaurant_id,menu_id):
     item = session.query(MenuItem).filter_by(id=menu_id).one()
@@ -90,7 +104,7 @@ def newMenuItem(restaurant_id):
                            'description'], price=request.form['price'], course=request.form['course'], restaurant_id=restaurant_id)
         session.add(newItem)
         session.commit()
-        flash("new menu item created!")
+        flash("New menu item created")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     else:
         return render_template('newmenuitem.html', restaurant_id=restaurant_id)
@@ -104,7 +118,7 @@ def editMenuItem(restaurant_id, menu_id):
             editedItem.name = request.form['name']
         session.add(editedItem)
         session.commit()
-        flash("menu item edited!")
+        flash("Menu item edited")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     else:
         return render_template(
@@ -117,7 +131,7 @@ def deleteMenuItem(restaurant_id, menu_id):
     if request.method == 'POST':
         session.delete(deleteItem)
         session.commit()
-        flash("menu item deleted!")
+        flash("Menu item deleted")
         return redirect(url_for('restaurantMenu', restaurant_id=restaurant_id))
     else:
         return render_template(
